@@ -100,8 +100,8 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
 
                         contactsObject.setName(name);
                         contactsObject.setMobileNumber(mobileNumber);
-                        contactsObject.setFlag(false);
-                        contactsObject.setSelectedMobileNumber(mobileNumber);
+                        contactsObject.setFlag(mSharedPreferences.getBoolean("checkbox_"+name,false));
+                        contactsObject.setSelectedMobileNumber(mSharedPreferences.getString("selected_mobile_number_for_"+name,mobileNumber));
                     }
 
                 }
@@ -114,14 +114,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
         }
         phones.close();
 
-        /*
-            If size hasn't changed. That is new contact is not added.
-         */
-        for (int i = 0; i < contactsArrayList.size(); i++) {
-
-                contactsArrayList.get(i).setFlag(mSharedPreferences.getBoolean("checkbox_"+i,false));
-                contactsArrayList.get(i).setSelectedMobileNumber(mSharedPreferences.getString("selected_mobile_number_for_"+i,contactsArrayList.get(i).getSelectedMobileNumber()));
-        }
+        
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_in_contacts);
         mRecyclerView.setHasFixedSize(true);
@@ -153,13 +146,13 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
 
                         data = data + "\n" + singleContact.getName().toString()+"    "+singleContact.getSelectedMobileNumber();
                         counter++;
-                        mEditor.putBoolean("checkbox_"+i,true);
-                        mEditor.putString("selected_mobile_number_for_"+i,""+singleContact.getSelectedMobileNumber());
+                        mEditor.putBoolean("checkbox_"+contactsArrayList.get(i).getName(),true);
+                        mEditor.putString("selected_mobile_number_for_"+contactsArrayList.get(i).getName(),""+singleContact.getSelectedMobileNumber());
                     }
                     else
                     {
-                        mEditor.putBoolean("checkbox_"+i,false);
-                        mEditor.putString("selected_mobile_number_for_"+i,""+singleContact.getSelectedMobileNumber());
+                        mEditor.putBoolean("checkbox_"+contactsArrayList.get(i).getName(),false);
+                        mEditor.putString("selected_mobile_number_for_"+contactsArrayList.get(i).getName(),""+singleContact.getSelectedMobileNumber());
                     }
 
                 }
