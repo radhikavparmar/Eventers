@@ -1,10 +1,13 @@
 package com.android.eventers;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +28,7 @@ import java.util.Locale;
 public class ContactsActivity extends AppCompatActivity implements ContactsAdapter.ListItemClickListener {
 
     private static final int CHECK_CLICK = 1;
+    private static final String LIST_STATE_KEY = "list_state";
     FloatingActionButton mFloatingActionButton;
     RecyclerView mRecyclerView;
     ContactsAdapter mAdapter;
@@ -34,6 +38,10 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
     Contacts contactsObject;
     TextView noItem;
     private ArrayList<Contacts> contactsArrayList;
+    private Parcelable mListState;
+    private LinearLayoutManager mLayoutManager;
+    SharedPreferences mSharedPreferences;
+    SharedPreferences.Editor mEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,8 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
         contactsArrayList = new ArrayList<Contacts>();
 
 
+        mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        mEditor = mSharedPreferences.edit();
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC");
         while (phones.moveToNext()) {
 
@@ -104,11 +114,19 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
         }
         phones.close();
 
+        /*
+            If size hasn't changed. That is new contact is not added.
+         */
+        for (int i = 0; i < contactsArrayList.size(); i++) {
+
+                contactsArrayList.get(i).setFlag(mSharedPreferences.getBoolean("checkbox_"+i,false));
+                contactsArrayList.get(i).setSelectedMobileNumber(mSharedPreferences.getString("selected_mobile_number_for_"+i,contactsArrayList.get(i).getSelectedMobileNumber()));
+        }
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_in_contacts);
         mRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(layoutManager);
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ContactsAdapter(contactsArrayList, ContactsActivity.this);
         mRecyclerView.setAdapter(mAdapter);
         if(contactsArrayList.size()==0){
@@ -128,16 +146,24 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
                 String data = "";
                 int counter = 0;
 
+
                 for (int i = 0; i < contactsArrayList.size(); i++) {
                     Contacts singleContact = contactsArrayList.get(i);
                     if (contactsArrayList.get(i).getFlag()) {
 
                         data = data + "\n" + singleContact.getName().toString()+"    "+singleContact.getSelectedMobileNumber();
                         counter++;
+                        mEditor.putBoolean("checkbox_"+i,true);
+                        mEditor.putString("selected_mobile_number_for_"+i,""+singleContact.getSelectedMobileNumber());
+                    }
+                    else
+                    {
+                        mEditor.putBoolean("checkbox_"+i,false);
+                        mEditor.putString("selected_mobile_number_for_"+i,""+singleContact.getSelectedMobileNumber());
                     }
 
                 }
-
+                mEditor.commit();
                 Toast.makeText(ContactsActivity.this, "Selected Students: \n" + data, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(ContactsActivity.this,ReportActivity.class);
                 intent.putExtra("TOTAL_KEY",contactsArrayList.size()+"");
@@ -159,41 +185,13 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
                    for (int j = 0;j<contactsArrayList.get(clickedItemIndex).getMobileNumber().size();j++) {
                        items[j] = contactsArrayList.get(clickedItemIndex).getMobileNumber().get(j);
                    }
-//                   String items []= {"1234123443","1234567890","1234432143"};
-//                   AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-//                   alertDialogBuilder.setMessage("Please select mobile number");
-//                   alertDialogBuilder.setSingleChoiceItems( items, -1, new DialogInterface.OnClickListener() {
-//                       @Override
-//                       public void onClick(DialogInterface dialogInterface, int i) {
-//
-//
-//                       }
-//                   });
-//                   alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
-//                       @Override
-//                       public void onClick(DialogInterface arg0, int arg1) {
-//                           Toast.makeText(ContactsActivity.this, "You clicked yes button", Toast.LENGTH_LONG).show();
-//                       }
-//                   });
-//
-//                   alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                       @Override
-//                       public void onClick(DialogInterface dialog, int which) {
-//                           finish();
-//                       }
-//                   });
-
-//                   AlertDialog alertDialog = alertDialogBuilder.create();
-//                   alertDialog.show();
-
 
 
 
 
                    AlertDialog levelDialog;
 
-// Strings to Show In Dialog with Radio Buttons
-              //     final CharSequence[] items = {" Easy "," Medium "," Hard "," Very Hard "};
+
 
                    // Creating and Building the Dialog
                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -220,6 +218,36 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
 
                 break;
             }
+        }
+        
+    }
+
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        // Save list state
+        mListState = mLayoutManager.onSaveInstanceState();
+        state.putParcelable(LIST_STATE_KEY, mListState);
+    }
+
+  
+
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+
+        // Retrieve list state and list/item positions
+        if(state != null)
+            mListState = state.getParcelable(LIST_STATE_KEY);
+    }
+
+   
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mListState != null) {
+            mLayoutManager.onRestoreInstanceState(mListState);
         }
     }
 }

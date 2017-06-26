@@ -33,7 +33,7 @@ public class ReportActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ReportActivity.this,MainActivity.class);
                 startActivity(intent);
-                
+
             }
         });
 
