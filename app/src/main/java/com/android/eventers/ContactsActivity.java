@@ -45,6 +45,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
     SharedPreferences.Editor mEditor;
     private boolean mCalledFromOncreate;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,77 +60,69 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
 
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
         mEditor = mSharedPreferences.edit();
-        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC");
-        while (phones.moveToNext()) {
+//        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC");
+//        while (phones.moveToNext()) {
+//
+//
+//            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+//            String phoneNumberStr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+//            try {
+//
+//
+//                final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+//                PhoneNumber phoneNumber = phoneNumberUtil.parse(phoneNumberStr, Locale.getDefault().getCountry());
+//                PhoneNumberUtil.PhoneNumberType phoneNumberType = phoneNumberUtil.getNumberType(phoneNumber);
+//
+//
+//                if (phoneNumberType == PhoneNumberType.MOBILE) {
+//
+//                    if (name.equals(contactName)) {
+//
+//
+//                        phoneNumberStr = phoneNumberStr.replaceAll(" ", "");
+//
+//                        if (phoneNumberStr.contains(mobileNumber)) {
+//
+//                        } else {
+//                            mobileNumber = String.valueOf(phoneNumber.getNationalNumber());
+//                            if(!tempList.contains(mobileNumber)) {
+//                                Log.e("phone: ", " " + phoneNumber);
+//                                contactsObject.setMobileNumber(mobileNumber);
+//                                tempList.add(mobileNumber);
+//                            }
+//                        }
+//
+//                    } else {
+//
+//                        if (contactsObject != null) {
+//                            contactsArrayList.add(contactsObject);
+//                        }
+//                        contactsObject = new Contacts();
+//                        tempList = new ArrayList<String>();
+//                        contactName = name;
+//                        mobileNumber = String.valueOf(phoneNumber.getNationalNumber());
+//                        tempList.add(mobileNumber);
+//                        Log.e("name: ", " " + name);
+//                        Log.e("phone: ", " " + mobileNumber);
+//
+//                        contactsObject.setName(name);
+//                        contactsObject.setMobileNumber(mobileNumber);
+//                        contactsObject.setFlag(mSharedPreferences.getBoolean("checkbox_" + name, false));
+//                        contactsObject.setSelectedMobileNumber(mSharedPreferences.getString("selected_mobile_number_for_" + name, mobileNumber));
+//                    }
+//
+//                }
+//            } catch (Exception e) {
+//            }
+//            if (phones.isLast()) {
+//                contactsArrayList.add(contactsObject);
+//            }
+//
+//        }
+//        phones.close();
+        launchConacts();
 
 
-            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String phoneNumberStr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            try {
-
-
-                final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
-                PhoneNumber phoneNumber = phoneNumberUtil.parse(phoneNumberStr, Locale.getDefault().getCountry());
-                PhoneNumberUtil.PhoneNumberType phoneNumberType = phoneNumberUtil.getNumberType(phoneNumber);
-
-
-                if (phoneNumberType == PhoneNumberType.MOBILE) {
-
-                    if (name.equals(contactName)) {
-
-
-                        phoneNumberStr = phoneNumberStr.replaceAll(" ", "");
-
-                        if (phoneNumberStr.contains(mobileNumber)) {
-
-                        } else {
-                            mobileNumber = String.valueOf(phoneNumber.getNationalNumber());
-                            if(!tempList.contains(mobileNumber)) {
-                                Log.e("phone: ", " " + phoneNumber);
-                                contactsObject.setMobileNumber(mobileNumber);
-                                tempList.add(mobileNumber);
-                            }
-                        }
-
-                    } else {
-
-                        if (contactsObject != null) {
-                            contactsArrayList.add(contactsObject);
-                        }
-                        contactsObject = new Contacts();
-                        tempList = new ArrayList<String>();
-                        contactName = name;
-                        mobileNumber = String.valueOf(phoneNumber.getNationalNumber());
-                        tempList.add(mobileNumber);
-                        Log.e("name: ", " " + name);
-                        Log.e("phone: ", " " + mobileNumber);
-
-                        contactsObject.setName(name);
-                        contactsObject.setMobileNumber(mobileNumber);
-                        contactsObject.setFlag(mSharedPreferences.getBoolean("checkbox_" + name, false));
-                        contactsObject.setSelectedMobileNumber(mSharedPreferences.getString("selected_mobile_number_for_" + name, mobileNumber));
-                    }
-
-                }
-            } catch (Exception e) {
-            }
-            if (phones.isLast()) {
-                contactsArrayList.add(contactsObject);
-            }
-
-        }
-        phones.close();
-        //launchConacts();
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_in_contacts);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ContactsAdapter(contactsArrayList, ContactsActivity.this);
-        mRecyclerView.setAdapter(mAdapter);
-        if (contactsArrayList.size() == 0) {
-            noItem.setVisibility(View.VISIBLE);
-        }
         for (int i = 0; i < contactsArrayList.size(); i++) {
 
             Log.e("name:", "" + contactsArrayList.get(i).getName());
@@ -160,7 +153,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
 
                 }
                 mEditor.commit();
-                Toast.makeText(ContactsActivity.this, "Selected Students: \n" + data, Toast.LENGTH_LONG).show();
+                Toast.makeText(ContactsActivity.this, "Selected contacts: \n" + data, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(ContactsActivity.this, ReportActivity.class);
                 intent.putExtra("TOTAL_KEY", contactsArrayList.size() + "");
                 intent.putExtra("SELECTED_KEY", counter + "");
@@ -176,10 +169,15 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
         switch (whichClick) {
             case CHECK_CLICK: {
                 //Toast.makeText(ContactsActivity.this, "Clicked on Checkbox: "+clickedItemIndex , Toast.LENGTH_SHORT).show();
+                int selectedMobileNumberPosition = 0;
+                String selectedMobileNumber = contactsArrayList.get(clickedItemIndex).getSelectedMobileNumber();
                 if (contactsArrayList.get(clickedItemIndex).getMobileNumber().size() > 1) {
                     final String items[] = new String[contactsArrayList.get(clickedItemIndex).getMobileNumber().size()];
                     for (int j = 0; j < contactsArrayList.get(clickedItemIndex).getMobileNumber().size(); j++) {
                         items[j] = contactsArrayList.get(clickedItemIndex).getMobileNumber().get(j);
+                        if (items[j].contains(selectedMobileNumber)) {
+                            selectedMobileNumberPosition = j;
+                        }
                     }
 
 
@@ -189,7 +187,9 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
                     // Creating and Building the Dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Please select the mobile number");
-                    builder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+
+
+                    builder.setSingleChoiceItems(items, selectedMobileNumberPosition, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int item) {
 
 
@@ -238,13 +238,12 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
         super.onResume();
 
 
-//        if (!mCalledFromOncreate) {
-//            contactsArrayList.clear();
-//            launchConacts();
-//
-//            mAdapter.notifyDataSetChanged();
-//
-//        }
+        if (!mCalledFromOncreate) {
+            contactsArrayList = new ArrayList<Contacts>();
+            launchConacts();
+            mAdapter.notifyDataSetChanged();
+            Log.e("Inside", "onResume after clear");
+        }
 
 
         if (mListState != null) {
@@ -253,63 +252,101 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
     }
 
     void launchConacts() {
+
+        //Cursor pho = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC");
+
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC");
+       Log.i("Size is "," "+phones.getCount());
+        if (phones != null && (phones.getCount() > 0)) {
+            phones.moveToFirst();
+            phones.move(0);
 
-        while (phones.moveToNext()) {
-
-
-            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String phoneNumberStr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            try {
-
-
-                final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
-                PhoneNumber phoneNumber = phoneNumberUtil.parse(phoneNumberStr, Locale.getDefault().getCountry());
-                PhoneNumberUtil.PhoneNumberType phoneNumberType = phoneNumberUtil.getNumberType(phoneNumber);
+            for (int i = 0; i < phones.getCount(); i++) {
 
 
-                if (phoneNumberType == PhoneNumberType.MOBILE) {
+                String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String phoneNumberStr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                try {
 
-                    if (name.equals(contactName)) {
+
+                    final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+                    PhoneNumber phoneNumber = phoneNumberUtil.parse(phoneNumberStr, Locale.getDefault().getCountry());
+                    PhoneNumberUtil.PhoneNumberType phoneNumberType = phoneNumberUtil.getNumberType(phoneNumber);
 
 
-                        phoneNumberStr = phoneNumberStr.replaceAll(" ", "");
+                    if (phoneNumberType == PhoneNumberType.MOBILE) {
 
-                        if (phoneNumberStr.contains(mobileNumber)) {
+                        if (name.equals(contactName)) {
+
+                            phoneNumberStr = phoneNumberStr.replaceAll(" ", "");
+
+                            if (phoneNumberStr.contains(mobileNumber)) {
+
+                            } else {
+                                mobileNumber = String.valueOf(phoneNumber.getNationalNumber());
+                                if (!tempList.contains(mobileNumber)) {
+                                    //  Log.e("phone: ", " " + phoneNumber);
+                                    contactsObject.setMobileNumber(mobileNumber);
+                                    tempList.add(mobileNumber);
+                                }
+                            }
+
                         } else {
+
+                            if (contactsObject != null) {
+                                contactsArrayList.add(contactsObject);
+                                Log.e("object added", contactsObject.getName());
+                            }
+                            contactsObject = new Contacts();
+                            tempList = new ArrayList<String>();
+                            contactName = name;
                             mobileNumber = String.valueOf(phoneNumber.getNationalNumber());
-                            Log.e("phone: ", " " + phoneNumber);
+                            tempList.add(mobileNumber);
+                            // Log.e("name: ", " " + name);
+                            // Log.e("phone: ", " " + mobileNumber);
+
+                            contactsObject.setName(name);
                             contactsObject.setMobileNumber(mobileNumber);
-
+                            contactsObject.setFlag(mSharedPreferences.getBoolean("checkbox_" + name, false));
+                            contactsObject.setSelectedMobileNumber(mSharedPreferences.getString("selected_mobile_number_for_" + name, mobileNumber));
                         }
 
-                    } else {
-
-                        if (contactsObject != null) {
-                            contactsArrayList.add(contactsObject);
-                        }
-                        contactsObject = new Contacts();
-
-                        contactName = name;
-                        mobileNumber = String.valueOf(phoneNumber.getNationalNumber());
-                        Log.e("name: ", " " + name);
-                        Log.e("phone: ", " " + mobileNumber);
-
-                        contactsObject.setName(name);
-                        contactsObject.setMobileNumber(mobileNumber);
-                        contactsObject.setFlag(mSharedPreferences.getBoolean("checkbox_" + name, false));
-                        contactsObject.setSelectedMobileNumber(mSharedPreferences.getString("selected_mobile_number_for_" + name, mobileNumber));
                     }
+                } catch (Exception e) {
+
+                } finally {
 
                 }
-            } catch (Exception e) {
+                if (phones.isLast()) {
+                    contactsArrayList.add(contactsObject);
+                   // Log.e("object added last>>>>>", contactsObject.getName());
+                }
+                phones.moveToNext();
             }
-            if (phones.isLast()) {
-                contactsArrayList.add(contactsObject);
-            }
-
+            //phones.close();
         }
-        phones.close();
+
+
+
+
+        mRecyclerView = (RecyclerView)
+
+                findViewById(R.id.recycler_view_in_contacts);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new
+
+                LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new
+
+                ContactsAdapter(contactsArrayList, ContactsActivity.this);
+        mRecyclerView.setAdapter(mAdapter);
+        if (contactsArrayList.size() == 0)
+
+        {
+            noItem.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
