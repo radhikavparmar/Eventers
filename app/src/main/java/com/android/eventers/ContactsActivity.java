@@ -1,5 +1,6 @@
 package com.android.eventers;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,82 +45,23 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
     SharedPreferences mSharedPreferences;
     SharedPreferences.Editor mEditor;
     private boolean mCalledFromOncreate;
-
+    public static Activity contactsActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-
+        contactsActivity = this;
         mCalledFromOncreate = true;
         noItem = (TextView) findViewById(R.id.no_listitem_in_contacts);
         noItem.setVisibility(View.GONE);
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.add_fab_in_main);
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.add_fab_in_contacts);
         contactsArrayList = new ArrayList<Contacts>();
 
 
         mSharedPreferences = getPreferences(Context.MODE_PRIVATE);
         mEditor = mSharedPreferences.edit();
-//        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC");
-//        while (phones.moveToNext()) {
-//
-//
-//            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-//            String phoneNumberStr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//            try {
-//
-//
-//                final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
-//                PhoneNumber phoneNumber = phoneNumberUtil.parse(phoneNumberStr, Locale.getDefault().getCountry());
-//                PhoneNumberUtil.PhoneNumberType phoneNumberType = phoneNumberUtil.getNumberType(phoneNumber);
-//
-//
-//                if (phoneNumberType == PhoneNumberType.MOBILE) {
-//
-//                    if (name.equals(contactName)) {
-//
-//
-//                        phoneNumberStr = phoneNumberStr.replaceAll(" ", "");
-//
-//                        if (phoneNumberStr.contains(mobileNumber)) {
-//
-//                        } else {
-//                            mobileNumber = String.valueOf(phoneNumber.getNationalNumber());
-//                            if(!tempList.contains(mobileNumber)) {
-//                                Log.e("phone: ", " " + phoneNumber);
-//                                contactsObject.setMobileNumber(mobileNumber);
-//                                tempList.add(mobileNumber);
-//                            }
-//                        }
-//
-//                    } else {
-//
-//                        if (contactsObject != null) {
-//                            contactsArrayList.add(contactsObject);
-//                        }
-//                        contactsObject = new Contacts();
-//                        tempList = new ArrayList<String>();
-//                        contactName = name;
-//                        mobileNumber = String.valueOf(phoneNumber.getNationalNumber());
-//                        tempList.add(mobileNumber);
-//                        Log.e("name: ", " " + name);
-//                        Log.e("phone: ", " " + mobileNumber);
-//
-//                        contactsObject.setName(name);
-//                        contactsObject.setMobileNumber(mobileNumber);
-//                        contactsObject.setFlag(mSharedPreferences.getBoolean("checkbox_" + name, false));
-//                        contactsObject.setSelectedMobileNumber(mSharedPreferences.getString("selected_mobile_number_for_" + name, mobileNumber));
-//                    }
-//
-//                }
-//            } catch (Exception e) {
-//            }
-//            if (phones.isLast()) {
-//                contactsArrayList.add(contactsObject);
-//            }
-//
-//        }
-//        phones.close();
+
         launchConacts();
 
 
@@ -256,7 +198,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
         //Cursor pho = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC");
 
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC");
-       Log.i("Size is "," "+phones.getCount());
+        Log.i("Size is ", " " + phones.getCount());
         if (phones != null && (phones.getCount() > 0)) {
             phones.moveToFirst();
             phones.move(0);
@@ -319,32 +261,22 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
                 }
                 if (phones.isLast()) {
                     contactsArrayList.add(contactsObject);
-                   // Log.e("object added last>>>>>", contactsObject.getName());
+                    // Log.e("object added last>>>>>", contactsObject.getName());
                     contactsObject = null;
                 }
                 phones.moveToNext();
             }
-            //phones.close();
+            phones.close();
         }
 
 
-
-
-        mRecyclerView = (RecyclerView)
-
-                findViewById(R.id.recycler_view_in_contacts);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_in_contacts);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new
-
-                LinearLayoutManager(getApplicationContext());
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new
-
-                ContactsAdapter(contactsArrayList, ContactsActivity.this);
+        mAdapter = new ContactsAdapter(contactsArrayList, ContactsActivity.this);
         mRecyclerView.setAdapter(mAdapter);
-        if (contactsArrayList.size() == 0)
-
-        {
+        if (contactsArrayList.size() == 0) {
             noItem.setVisibility(View.VISIBLE);
         }
 

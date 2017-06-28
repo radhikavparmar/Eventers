@@ -1,6 +1,5 @@
 package com.android.eventers;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -31,9 +30,10 @@ public class ReportActivity extends AppCompatActivity {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ReportActivity.this,MainActivity.class);
-                startActivity(intent);
-
+                //Intent intent = new Intent(ReportActivity.this,MainActivity.class);
+                //startActivity(intent);
+                ContactsActivity.contactsActivity.finish();
+                finish();
             }
         });
 
