@@ -320,6 +320,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
                 if (phones.isLast()) {
                     contactsArrayList.add(contactsObject);
                    // Log.e("object added last>>>>>", contactsObject.getName());
+                    contactsObject = null;
                 }
                 phones.moveToNext();
             }
