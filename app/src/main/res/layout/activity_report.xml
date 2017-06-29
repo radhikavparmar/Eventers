@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout_in_report"
@@ -8,31 +9,13 @@
     android:orientation="vertical">
 
 
-    <!--<android.support.design.widget.AppBarLayout-->
-    <!--android:id="@+id/app_bar_layout_in_main"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="@dimen/appbar_layout_height"-->
-    <!--android:background="?colorPrimary"-->
-    <!--android:elevation="@dimen/appbar_elevation">-->
-
-
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="?attr/actionBarSize"-->
-    <!--app:theme="@style/AppTheme.AppBarOverlay"-->
-    <!--app:title="Money Collector"-->
-    <!--app:titleTextColor="@color/tw__solid_white" />-->
-    <!--</android.support.design.widget.AppBarLayout>-->
-
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_in_report"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/sixteen_dp"
+        android:layout_marginRight="@dimen/sixteen_dp"
         android:contentDescription="@string/done"
         android:elevation="@dimen/fab_elevation"
         android:src="@drawable/ic_home_black_24dp"

@@ -30,20 +30,20 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
 
     private static final int CHECK_CLICK = 1;
     private static final String LIST_STATE_KEY = "list_state";
-    FloatingActionButton mFloatingActionButton;
-    RecyclerView mRecyclerView;
-    ContactsAdapter mAdapter;
-    String contactName;
-    String mobileNumber;
-    String mobileNumberSelected;
-    Contacts contactsObject;
-    TextView noItem;
+    private FloatingActionButton mFloatingActionButton;
+    private RecyclerView mRecyclerView;
+    private ContactsAdapter mAdapter;
+    private String contactName;
+    private String mobileNumber;
+    private String mobileNumberSelected;
+    private Contacts contactsObject;
+    private TextView noItem;
     private ArrayList<Contacts> contactsArrayList;
-    ArrayList<String> tempList;
+    private ArrayList<String> tempList;
     private Parcelable mListState;
     private LinearLayoutManager mLayoutManager;
-    SharedPreferences mSharedPreferences;
-    SharedPreferences.Editor mEditor;
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mEditor;
     private boolean mCalledFromOncreate;
     public static Activity contactsActivity;
 
@@ -65,17 +65,16 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
         launchConacts();
 
 
-        for (int i = 0; i < contactsArrayList.size(); i++) {
-
-            Log.e("name:", "" + contactsArrayList.get(i).getName());
-            for (int j = 0; j < contactsArrayList.get(i).getMobileNumber().size(); j++) {
-                Log.e("num:", contactsArrayList.get(i).getMobileNumber().get(j));
-            }
-        }
+//        for (int i = 0; i < contactsArrayList.size(); i++) {
+//
+//            Log.e("name:", "" + contactsArrayList.get(i).getName());
+//            for (int j = 0; j < contactsArrayList.get(i).getMobileNumber().size(); j++) {
+//                Log.e("num:", contactsArrayList.get(i).getMobileNumber().get(j));
+//            }
+//        }
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String data = "";
                 int counter = 0;
 
@@ -125,7 +124,6 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
 
                     AlertDialog levelDialog;
 
-
                     // Creating and Building the Dialog
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Please select the mobile number");
@@ -133,8 +131,6 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
 
                     builder.setSingleChoiceItems(items, selectedMobileNumberPosition, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int item) {
-
-
                             mobileNumberSelected = items[item];
                             contactsArrayList.get(clickedItemIndex).setSelectedMobileNumber(mobileNumberSelected);
                             // levelDialog.dismiss();
@@ -195,8 +191,6 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
 
     void launchConacts() {
 
-        //Cursor pho = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC");
-
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE NOCASE ASC");
         Log.i("Size is ", " " + phones.getCount());
         if (phones != null && (phones.getCount() > 0)) {
@@ -209,7 +203,6 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
                 String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 String phoneNumberStr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 try {
-
 
                     final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
                     PhoneNumber phoneNumber = phoneNumberUtil.parse(phoneNumberStr, Locale.getDefault().getCountry());
@@ -286,5 +279,19 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
     protected void onPause() {
         super.onPause();
         mCalledFromOncreate = false;
+        for (int i = 0; i < contactsArrayList.size(); i++) {
+            Contacts singleContact = contactsArrayList.get(i);
+            if (contactsArrayList.get(i).getFlag()) {
+
+                mEditor.putBoolean("checkbox_" + contactsArrayList.get(i).getName(), true);
+                mEditor.putString("selected_mobile_number_for_" + contactsArrayList.get(i).getName(), "" + singleContact.getSelectedMobileNumber());
+            } else {
+                mEditor.putBoolean("checkbox_" + contactsArrayList.get(i).getName(), false);
+                mEditor.putString("selected_mobile_number_for_" + contactsArrayList.get(i).getName(), "" + singleContact.getSelectedMobileNumber());
+            }
+
+        }
+        mEditor.commit();
+
     }
 }

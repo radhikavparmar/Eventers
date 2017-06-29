@@ -20,8 +20,6 @@ public class Contacts {
         this.selectedMobileNumber = selectedMobileNumber;
     }
 
-
-
     public String getName() {
         return name;
     }

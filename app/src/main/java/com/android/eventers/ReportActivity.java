@@ -25,8 +25,6 @@ public class ReportActivity extends AppCompatActivity {
         mSelectedTextview.setText("Selected: "+value2);
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab_in_report);
 
-
-
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
