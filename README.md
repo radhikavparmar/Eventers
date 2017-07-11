@@ -9,3 +9,9 @@ Consider them as same number only. His other numbers are 0205601234, which is no
 So only numbers which are mobile and non-duplicates are displayed.
 
 ![alt tag](https://user-images.githubusercontent.com/3963797/28071192-d898d6d8-666c-11e7-8724-701447e0c083.png)
+
+
+![alt tag](https://user-images.githubusercontent.com/3963797/28071697-4e7e1f60-666e-11e7-9ffa-9eecccbc11fc.png)
+
+
+![alt tag](https://user-images.githubusercontent.com/3963797/28071701-508c92be-666e-11e7-9d21-a5d442554eaf.png)
