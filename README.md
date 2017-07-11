@@ -1,7 +1,9 @@
 # Eventers
 
-Uses library libphonenumber
-com.googlecode.libphonenumber:libphonenumber:8.4.0
+Uses 
+-- library libphonenumber (com.googlecode.libphonenumber:libphonenumber:8.4.0)
+-- cardview, recycler view
+
 
 Display the contacts  without duplicate numbers and only mobile numbers . 
 Eg. Suppose a contact Edwin is having five numbers out of which two are same which can be 09123456700 nd +919123456700. 
