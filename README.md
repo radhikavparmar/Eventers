@@ -1,8 +1,8 @@
 # Eventers
 
 Uses 
--- library libphonenumber (com.googlecode.libphonenumber:libphonenumber:8.4.0)
--- cardview, recycler view
+
+-- library libphonenumber (com.googlecode.libphonenumber:libphonenumber:8.4.0), cardview, recycler view
 
 
 Display the contacts  without duplicate numbers and only mobile numbers . 
