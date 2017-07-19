@@ -12,8 +12,11 @@ State is maintained. If a user selects the contact and comes again to the app, h
 SCREENS:
 
 Screen 1 - on click of button, move to screen 2 and show contacts. 
+
 Screen 2(a) - Display contact list and option to select multiple contacts.
+
 Screen 2(b) - In case any contact is having multiple numbers, this screen will have option to select one of the multiple numbers.
+
 Screen 3 - Display number of selected contacts and total contacts.
 
 ![alt tag](https://user-images.githubusercontent.com/3963797/28071192-d898d6d8-666c-11e7-8724-701447e0c083.png)
